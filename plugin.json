@@ -1,0 +1,21 @@
+{
+	"plugin": {
+		"name": "DOL Plugin",
+		"type": ["binaryview"],
+		"api": "python2",
+    "description": "A plugin to load Gamecube/WII DOL executables",
+    "longdescription": "",
+		"dependencies": {
+			"pip": [],
+			"apt": [],
+			"installers": [],
+			"other": []
+		},
+		"version": "1.0",
+		"author": "Drewler",
+		"minimumBinaryNinjaVersion": {
+			"dev": "1.0.dev-576",
+			"release": "9999"
+		}
+	}
+}
