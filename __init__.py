@@ -3,7 +3,7 @@ from binaryninja.architecture import Architecture
 from binaryninja.binaryview import BinaryView
 from binaryninja.log import log_error
 from binaryninja.types import Symbol, Type
-from binaryninja.enums import (BranchType, InstructionTextTokenType, LowLevelILOperation, LowLevelILFlagCondition, FlagRole, SegmentFlag, SymbolType)
+from binaryninja.enums import (BranchType, InstructionTextTokenType, LowLevelILOperation, LowLevelILFlagCondition, FlagRole, SegmentFlag, SymbolType, SectionSemantics)
 from binaryninja.interaction import get_open_filename_input, get_choice_input
 
 import struct
@@ -72,6 +72,8 @@ class DOLView(BinaryView):
                 SegmentFlag.SegmentReadable | SegmentFlag.SegmentExecutable
             )
 
+            self.add_user_section('CODE %d' % i, self.header['addressText'][i], self.header['sizeText'][i], SectionSemantics.ReadOnlyCodeSectionSemantics)
+
         # create data segments
         for i in range(7):
             if self.header['addressData'][i] == 0:
@@ -85,6 +87,8 @@ class DOLView(BinaryView):
                 SegmentFlag.SegmentReadable
             )
 
+            self.add_user_section('DATA %d' % i, self.header['addressData'][i], self.header['sizeData'][i], SectionSemantics.ReadOnlyDataSectionSemantics)
+
         if self.header['addressBSS']:
             self.add_auto_segment(
                 self.header['addressBSS'],
@@ -93,6 +97,9 @@ class DOLView(BinaryView):
                 0,
                 SegmentFlag.SegmentReadable
             )
+
+            self.add_user_section('BSS', self.header['addressBSS'], self.header['sizeBSS'], SectionSemantics.ReadOnlyDataSectionSemantics)
+
 
         self.add_entry_point(self.header['entrypoint'])
         return True
@@ -103,7 +110,5 @@ class DOLView(BinaryView):
 
     def perform_get_entry_point(self):
         return self.header['entrypoint']
-
-print list(Architecture)
 
 DOLView.register()
